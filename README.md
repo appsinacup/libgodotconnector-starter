@@ -4,6 +4,12 @@ Runs LibGodot inside Elixir.
 
 ## Installation
 
+Get deps:
+
+```sh
+mix deps.get
+```
+
 Compile it:
 
 ```sh
