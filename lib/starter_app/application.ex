@@ -4,7 +4,13 @@ defmodule StarterApp.Application do
   @impl true
   def start(_type, _args) do
     children = [
-      # You can add your own workers here
+      # Call the demo once shortly after boot.
+      {Task, fn ->
+        # Give the dependency app time to start.
+        # TODO add startup event on godot to know when it's ready.
+        Process.sleep(500)
+        StarterApp.hello()
+      end}
     ]
 
     opts = [strategy: :one_for_one, name: StarterApp.Supervisor]

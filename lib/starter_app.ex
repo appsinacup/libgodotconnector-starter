@@ -11,7 +11,7 @@ defmodule StarterApp do
         IO.puts("LibGodotConnector.Godot is not running.")
       pid ->
         IO.puts("LibGodotConnector.Godot is running at #{inspect(pid)}")
-        case LibGodot.Driver.request(pid, "Hello Godot!", 1000) do
+        case LibGodot.Driver.request(pid, "Hello Godot!") do
           {:ok, resp} -> IO.puts("Response from Godot: #{resp}")
           {:error, reason} -> IO.puts("Error from Godot: #{inspect(reason)}")
         end

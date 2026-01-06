@@ -13,6 +13,7 @@ mix deps.get
 Compile it:
 
 ```sh
+mix deps.get
 mix compile
 ```
 
@@ -22,4 +23,12 @@ Run it:
 mix run --no-halt
 ```
 
-We use no halt because otherwise, the libgodot app will stop running.
+We use no-halt because otherwise the app will exit.
+
+Optional demo request:
+
+```sh
+iex -S mix
+```
+
+Then run `StarterApp.hello()`.
