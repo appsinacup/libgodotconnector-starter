@@ -13,7 +13,6 @@ mix deps.get
 Compile it:
 
 ```sh
-mix deps.get
 mix compile
 ```
 
@@ -24,11 +23,3 @@ mix run --no-halt
 ```
 
 We use no-halt because otherwise the app will exit.
-
-Optional demo request:
-
-```sh
-iex -S mix
-```
-
-Then run `StarterApp.hello()`.
