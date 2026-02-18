@@ -22,4 +22,4 @@ Run it:
 mix run --no-halt
 ```
 
-We use no-halt because otherwise the app will exit.
+The app will call the Godot connector 10 times and then exit automatically.

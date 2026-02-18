@@ -1,0 +1,120 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test:
+    name: Test on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-22.04, macos-latest, windows-2022]
+        elixir: ['1.19']
+        otp: ['27']
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Elixir and Erlang
+        uses: erlef/setup-beam@v1
+        with:
+          elixir-version: ${{ matrix.elixir }}
+          otp-version: ${{ matrix.otp }}
+
+      - name: Set up MSYS2 (Windows)
+        if: runner.os == 'Windows'
+        uses: msys2/setup-msys2@v2
+        with:
+          update: true
+          path-type: minimal
+          install: >-
+            make
+            tar
+            unzip
+            mingw-w64-x86_64-gcc
+            mingw-w64-x86_64-cmake
+            mingw-w64-x86_64-python
+
+      - name: Install build tools (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential cmake
+
+      - name: Install build tools (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          brew install cmake
+
+      - name: Restore dependency cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            deps
+            _build
+          key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-mix-
+
+      - name: Install dependencies (Linux/macOS)
+        if: runner.os != 'Windows'
+        run: mix deps.get
+
+      - name: Install dependencies (Windows)
+        if: runner.os == 'Windows'
+        shell: msys2 {0}
+        run: |
+          export PATH="$(cygpath -u "$INSTALL_DIR_FOR_ELIXIR")/bin:$(cygpath -u "$INSTALL_DIR_FOR_OTP")/bin:$PATH"
+          mix deps.get
+
+      - name: Check formatting
+        if: runner.os == 'Linux'
+        run: mix format --check-formatted
+
+      - name: Compile project (Linux/macOS)
+        if: runner.os != 'Windows'
+        run: mix compile --warnings-as-errors
+        env:
+          MIX_ENV: test
+
+      - name: Compile project (Windows)
+        if: runner.os == 'Windows'
+        shell: msys2 {0}
+        run: |
+          export PATH="$(cygpath -u "$INSTALL_DIR_FOR_ELIXIR")/bin:$(cygpath -u "$INSTALL_DIR_FOR_OTP")/bin:$PATH"
+          mix compile --warnings-as-errors
+        env:
+          MIX_ENV: test
+
+      - name: Run tests (Linux/macOS)
+        if: runner.os != 'Windows'
+        run: mix test --no-start
+
+      - name: Run tests (Windows)
+        if: runner.os == 'Windows'
+        shell: msys2 {0}
+        run: |
+          export PATH="$(cygpath -u "$INSTALL_DIR_FOR_ELIXIR")/bin:$(cygpath -u "$INSTALL_DIR_FOR_OTP")/bin:$PATH"
+          mix test --no-start
+
+      - name: Run application (Linux/macOS)
+        if: runner.os != 'Windows'
+        run: |
+          mix compile
+          mix run --no-halt
+
+      - name: Run application (Windows)
+        if: runner.os == 'Windows'
+        shell: msys2 {0}
+        run: |
+          export PATH="$(cygpath -u "$INSTALL_DIR_FOR_ELIXIR")/bin:$(cygpath -u "$INSTALL_DIR_FOR_OTP")/bin:$PATH"
+          mix compile
+          # Windows timeout command syntax is different
+          run --no-halt
