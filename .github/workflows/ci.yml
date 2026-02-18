@@ -28,31 +28,6 @@ jobs:
           elixir-version: ${{ matrix.elixir }}
           otp-version: ${{ matrix.otp }}
 
-#      - name: Set up MSYS2 (Windows)
-#        if: runner.os == 'Windows'
-#        uses: msys2/setup-msys2@v2
-#        with:
-#          update: true
-#          path-type: minimal
-#          install: >-
-#            make
-#            tar
-#            unzip
-#            mingw-w64-x86_64-gcc
-#            mingw-w64-x86_64-cmake
-#            mingw-w64-x86_64-python
-
-#      - name: Install build tools (Linux)
-#        if: runner.os == 'Linux'
-#        run: |
-#          sudo apt-get update
-#          sudo apt-get install -y build-essential cmake
-#
-#      - name: Install build tools (macOS)
-#        if: runner.os == 'macOS'
-#        run: |
-#          brew install cmake
-
       - name: Restore dependency cache
         uses: actions/cache@v4
         with:
@@ -78,7 +53,7 @@ jobs:
         run: mix test --no-start
 
       - name: Run application
-        run:
+        run: |
           mix compile --warnings-as-errors
           mix run --no-halt
          
