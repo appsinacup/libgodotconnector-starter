@@ -22,7 +22,7 @@ defmodule StarterApp.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:lib_godot_connector, "4.5.1-4"}
+      {:lib_godot_connector, "4.5.1-5"}
     ]
   end
 end
