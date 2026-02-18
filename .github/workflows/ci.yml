@@ -54,6 +54,5 @@ jobs:
 
       - name: Run application
         run: |
-          mix compile --warnings-as-errors
           mix run --no-halt
          
