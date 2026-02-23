@@ -24,3 +24,4 @@ starter_app-*.tar
 
 .elixir_ls/
 project/_build/test/lib/starter_app/.mix/.mix_test_failures
+.DS_Store
