@@ -56,6 +56,8 @@ jobs:
         run: mix compile --warnings-as-errors
         env:
           MIX_ENV: test
+          # Windows runners need GNU make from MSYS2/MinGW
+          MAKE: ${{ matrix.os == 'windows-2022' && 'make' || '' }}
 
       - name: Run tests
         run: mix test --no-start
