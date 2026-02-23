@@ -8,9 +8,7 @@ defmodule StarterApp.MixProject do
       elixir: "~> 1.19",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
-      elixirc_paths: elixirc_paths(Mix.env()),
-      compilers: [:elixir_make] ++ Mix.compilers(),
-      make_env: [{"MAKE", "make"}]
+      elixirc_paths: elixirc_paths(Mix.env())
     ]
   end
 
